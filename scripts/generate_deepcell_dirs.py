@@ -24,7 +24,7 @@ def create_dir(dir_path):
             raise Exception('Directory ' +dir_path.name + ' is not empty.')
 
 #Get tiff file names in this folder (say something if there aren't any)
-files = [f for f in Path(".").iterdir() if (f.name.endswith(".tif"))]
+files = [f for f in Path(".").iterdir() if (f.name.endswith(".tif") or f.name.endswith(".tiff"))]
 
 if len(files) == 0:
     raise Exception('No mibi tiff files found. Please place this script in your directory folder.')
