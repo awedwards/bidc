@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+from mibidata import tiff
+import re
 from pathlib import Path
 import shutil
 from os import remove
@@ -32,19 +33,31 @@ if len(files) == 0:
 cwd = Path.cwd()
 
 #Create required directory structure for DeepCell
-input_dir = Path(cwd,"input_dir")
+input_dir = Path(cwd,"input_data")
 create_dir(input_dir)
-tiff_dir = Path(input_dir, "mibitiff_input")
-create_dir(tiff_dir)
+single_tiff_dir = Path(input_dir, "single_channel_inputs")
+create_dir(single_tiff_dir)
+mibitiff_dir = Path(input_dir, "mibitiff_inputs")
+create_dir(mibitiff_dir)
 deepcell_input_dir = Path(input_dir,"deepcell_input")
 create_dir(deepcell_input_dir)
 deepcell_output_dir = Path(cwd, "deepcell_output")
 create_dir(deepcell_output_dir)
 
+for f in files:
+
+    res = re.match("fov\d+",f.name)[0]
+    create_dir(Path(single_tiff_dir,res))
+    fov_dir = Path(single_tiff_dir,res,"TIFs")
+    create_dir(fov_dir)
+    mibitf = tiff.read(str(f))
+    tiff.write(str(Path(fov_dir)), mibitf,multichannel=False)
+
+
 #Move tiff files to tiff input directory
 
 for f in files:
-    shutil.move(str(Path(cwd, f)), str(Path(tiff_dir, f)))
+    shutil.move(str(Path(cwd, f)), str(Path(mibitiff_dir, f)))
 
 # self-delete
 remove(argv[0])
